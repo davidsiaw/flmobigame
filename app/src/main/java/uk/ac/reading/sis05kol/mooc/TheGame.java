@@ -57,14 +57,14 @@ public class TheGame extends GameThread{
     }
 
     //This is run whenever the phone is touched by the user
-	/*
+
 	@Override
 	protected void actionOnTouch(float x, float y) {
 		//Increase/decrease the speed of the ball making the ball move towards the touch
 		mBallSpeedX = x - mBallX;
 		mBallSpeedY = y - mBallY;
 	}
-	*/
+	
 	
 
 	//This is run whenever the phone moves around its axises 
