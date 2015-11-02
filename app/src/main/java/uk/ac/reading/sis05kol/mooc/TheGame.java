@@ -60,10 +60,8 @@ public class TheGame extends GameThread{
 
 	@Override
 	protected void actionOnTouch(float x, float y) {
-        mBallSpeedX = 0;
-        mBallSpeedY = 0;
-        mBallX = x;
-        mBallY = y;
+        mBallSpeedX = (x - mBallX) * 2;
+        mBallSpeedY = (y - mBallY) * 2;
 	}
 
 	
