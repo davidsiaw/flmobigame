@@ -83,9 +83,20 @@ public class TheGame extends GameThread{
     //This is run just before the game "scenario" is printed on the screen
     @Override
     protected void updateGame(float secondsElapsed) {
+
+        // Make the ball bounce off the edges off the screen back in
+        if (mBallX < 0 || mBallX > mCanvasWidth) {
+            mBallSpeedX = -mBallSpeedX;
+        }
+
+        if (mBallY < 0 || mBallY > mCanvasHeight) {
+            mBallSpeedY = -mBallSpeedY;
+        }
+
         //Move the ball's X and Y using the speed (pixel/sec)
         mBallX = mBallX + secondsElapsed * mBallSpeedX;
         mBallY = mBallY + secondsElapsed * mBallSpeedY;
+
     }
 }
 
