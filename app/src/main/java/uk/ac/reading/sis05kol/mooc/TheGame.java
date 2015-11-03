@@ -75,27 +75,34 @@ public class TheGame extends GameThread{
 		If the ball moves too slow try and increase 70f
 		 */
 
-		mBallSpeedX = mBallSpeedX + 70f * xDirection;
-		mBallSpeedY = mBallSpeedY - 70f * yDirection;
-	}
+        mBallSpeedX = mBallSpeedX + 70f * xDirection;
+        mBallSpeedY = mBallSpeedY - 70f * yDirection;
 
+
+    }
 
     //This is run just before the game "scenario" is printed on the screen
     @Override
     protected void updateGame(float secondsElapsed) {
 
-        // Make the ball bounce off the edges off the screen back in
-        if (mBallX < 0 || mBallX > mCanvasWidth) {
+
+        if ((mBallX - mBall.getWidth()/2 < 0 && mBallSpeedX < 0) ||
+                (mBallX + mBall.getWidth() > mCanvasWidth && mBallSpeedX > 0)) {
             mBallSpeedX = -mBallSpeedX;
         }
 
-        if (mBallY < 0 || mBallY > mCanvasHeight) {
+        if ((mBallY - mBall.getHeight()/2 < 0 && mBallSpeedY < 0) ||
+                (mBallY + mBall.getHeight() > mCanvasHeight && mBallSpeedY > 0)) {
             mBallSpeedY = -mBallSpeedY;
         }
 
-        //Move the ball's X and Y using the speed (pixel/sec)
-        mBallX = mBallX + secondsElapsed * mBallSpeedX;
-        mBallY = mBallY + secondsElapsed * mBallSpeedY;
+        // Calculate the new ball position using the speed (pixel/sec)
+        float newBallX = mBallX + secondsElapsed * mBallSpeedX;
+        float newBallY = mBallY + secondsElapsed * mBallSpeedY;
+
+        // Update ball position
+        mBallX = newBallX;
+        mBallY = newBallY;
 
     }
 }
