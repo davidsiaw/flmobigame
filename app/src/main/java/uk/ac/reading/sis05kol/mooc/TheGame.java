@@ -20,6 +20,8 @@ public class TheGame extends GameThread{
     private float mBallSpeedY = 0;
 
     private float mPaddleX = 0;
+    private float mPaddleSpeedX = 0;
+
 
 
     //This is run before anything else, so we can prepare things here
@@ -41,8 +43,8 @@ public class TheGame extends GameThread{
     @Override
     public void setupBeginning() {
         //Initialise speeds
-        mBallSpeedX = 0;
-        mBallSpeedY = 0;
+        mBallSpeedX = 500;
+        mBallSpeedY = 500;
 
         //Place the ball in the middle of the screen.
         //mBall.Width() and mBall.getHeigh() gives us the height and width of the image of the ball
@@ -72,7 +74,7 @@ public class TheGame extends GameThread{
 
 	@Override
 	protected void actionOnTouch(float x, float y) {
-        mPaddleX = x;
+        mPaddleSpeedX = x - mPaddleX;
 	}
 
 	//This is run whenever the phone moves around its axises 
@@ -84,15 +86,15 @@ public class TheGame extends GameThread{
     //This is run just before the game "scenario" is printed on the screen
     @Override
     protected void updateGame(float secondsElapsed) {
-
+        
 
         if ((mBallX - mBall.getWidth()/2 < 0 && mBallSpeedX < 0) ||
-                (mBallX + mBall.getWidth() > mCanvasWidth && mBallSpeedX > 0)) {
+                (mBallX + mBall.getWidth()/2 > mCanvasWidth && mBallSpeedX > 0)) {
             mBallSpeedX = -mBallSpeedX;
         }
 
         if ((mBallY - mBall.getHeight()/2 < 0 && mBallSpeedY < 0) ||
-                (mBallY + mBall.getHeight() > mCanvasHeight && mBallSpeedY > 0)) {
+                (mBallY + mBall.getHeight()/2 > mCanvasHeight && mBallSpeedY > 0)) {
             mBallSpeedY = -mBallSpeedY;
         }
 
@@ -104,6 +106,12 @@ public class TheGame extends GameThread{
         mBallX = newBallX;
         mBallY = newBallY;
 
+        if ((mPaddleX - mPaddle.getWidth()/2 < 0 && mPaddleSpeedX < 0) ||
+                (mPaddleX + mPaddle.getWidth()/2 > mCanvasWidth && mPaddleSpeedX > 0)) {
+            mPaddleSpeedX = -mPaddleSpeedX;
+        }
+
+        mPaddleX = mPaddleX + secondsElapsed * mPaddleSpeedX;
     }
 }
 
