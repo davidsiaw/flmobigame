@@ -19,6 +19,7 @@ public class TheGame extends GameThread{
     private float mBallSpeedX = 0;
     private float mBallSpeedY = 0;
 
+    private float mPaddleDestinationX = 0;
     private float mPaddleX = 0;
     private float mPaddleY = 0;
     private float mPaddleSpeedX = 0;
@@ -44,8 +45,8 @@ public class TheGame extends GameThread{
     @Override
     public void setupBeginning() {
         //Initialise speeds
-        mBallSpeedX = 500;
-        mBallSpeedY = 500;
+        mBallSpeedX = 200;
+        mBallSpeedY = 200;
 
         //Place the ball in the middle of the screen.
         //mBall.Width() and mBall.getHeigh() gives us the height and width of the image of the ball
@@ -76,7 +77,8 @@ public class TheGame extends GameThread{
 
 	@Override
 	protected void actionOnTouch(float x, float y) {
-        mPaddleSpeedX = x - mPaddleX;
+        mPaddleSpeedX = (x - mPaddleX) * 10;
+        mPaddleDestinationX = x;
 	}
 
 	//This is run whenever the phone moves around its axises 
@@ -98,7 +100,16 @@ public class TheGame extends GameThread{
 
         if (ballPaddleDistSq < repulsionDistSq) {
             // Collide!
-            mBallSpeedX = -mBallSpeedX;
+            float mBallSpeed = (float)Math.sqrt(mBallSpeedX * mBallSpeedX + mBallSpeedY * mBallSpeedY);
+
+            mBallSpeedX = mBallX - mPaddleX;
+            mBallSpeedY = mBallY - mPaddleY;
+
+            float mBallNewSpeed = (float)Math.sqrt(mBallSpeedX * mBallSpeedX + mBallSpeedY * mBallSpeedY);
+
+            mBallSpeedX = mBallSpeedX * mBallSpeed / mBallNewSpeed;
+            mBallSpeedY = mBallSpeedY * mBallSpeed / mBallNewSpeed;
+
         }
 
         if ((mBallX - mBall.getWidth()/2 < 0 && mBallSpeedX < 0) ||
@@ -122,6 +133,11 @@ public class TheGame extends GameThread{
         if ((mPaddleX - mPaddle.getWidth()/2 < 0 && mPaddleSpeedX < 0) ||
                 (mPaddleX + mPaddle.getWidth()/2 > mCanvasWidth && mPaddleSpeedX > 0)) {
             mPaddleSpeedX = -mPaddleSpeedX;
+        }
+
+        if (mPaddleX < mPaddleDestinationX && mPaddleSpeedX < 0 || mPaddleX > mPaddleDestinationX && mPaddleSpeedX > 0)
+        {
+            mPaddleSpeedX = 0;
         }
 
         mPaddleX = mPaddleX + secondsElapsed * mPaddleSpeedX;
