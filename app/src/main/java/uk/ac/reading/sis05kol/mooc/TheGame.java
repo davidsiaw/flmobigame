@@ -20,6 +20,7 @@ public class TheGame extends GameThread{
     private float mBallSpeedY = 0;
 
     private float mPaddleX = 0;
+    private float mPaddleY = 0;
     private float mPaddleSpeedX = 0;
 
 
@@ -52,6 +53,7 @@ public class TheGame extends GameThread{
         mBallY = mCanvasHeight / 2;
 
         mPaddleX = mCanvasWidth / 2;
+        mPaddleY = mCanvasHeight - mPaddle.getHeight() / 2;
     }
 
     @Override
@@ -67,7 +69,7 @@ public class TheGame extends GameThread{
         //null means that we will use the image without any extra features (called Paint)
         canvas.drawBitmap(mBall, mBallX - mBall.getWidth() / 2, mBallY - mBall.getHeight() / 2, null);
 
-        canvas.drawBitmap(mPaddle, mPaddleX - mPaddle.getWidth() / 2, mCanvasHeight - mPaddle.getHeight(), null);
+        canvas.drawBitmap(mPaddle, mPaddleX - mPaddle.getWidth() / 2, mPaddleY - mPaddle.getHeight() / 2, null);
     }
 
     //This is run whenever the phone is touched by the user
@@ -86,7 +88,18 @@ public class TheGame extends GameThread{
     //This is run just before the game "scenario" is printed on the screen
     @Override
     protected void updateGame(float secondsElapsed) {
-        
+
+        float repulsionDist = mBall.getWidth() / 2 + mPaddle.getWidth() / 2;
+        float repulsionDistSq = repulsionDist * repulsionDist;
+
+        float ballPaddleDistX = mBallX - mPaddleX;
+        float ballPaddleDistY = mBallY - mPaddleY;
+        float ballPaddleDistSq = ballPaddleDistX * ballPaddleDistX + ballPaddleDistY * ballPaddleDistY;
+
+        if (ballPaddleDistSq < repulsionDistSq) {
+            // Collide!
+            mBallSpeedX = -mBallSpeedX;
+        }
 
         if ((mBallX - mBall.getWidth()/2 < 0 && mBallSpeedX < 0) ||
                 (mBallX + mBall.getWidth()/2 > mCanvasWidth && mBallSpeedX > 0)) {
