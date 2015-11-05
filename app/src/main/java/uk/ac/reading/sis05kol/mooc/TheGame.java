@@ -24,6 +24,8 @@ public class TheGame extends GameThread{
     private float mPaddleY = 0;
     private float mPaddleSpeedX = 0;
 
+    private float mSmileyX = 0;
+    private float mSmileyY = 0;
 
 
     //This is run before anything else, so we can prepare things here
@@ -55,6 +57,9 @@ public class TheGame extends GameThread{
 
         mPaddleX = mCanvasWidth / 2;
         mPaddleY = mCanvasHeight - mPaddle.getHeight() / 2;
+
+        mSmileyX = mCanvasWidth / 2;
+        mSmileyY = mCanvasHeight / 4;
     }
 
     @Override
@@ -71,6 +76,8 @@ public class TheGame extends GameThread{
         canvas.drawBitmap(mBall, mBallX - mBall.getWidth() / 2, mBallY - mBall.getHeight() / 2, null);
 
         canvas.drawBitmap(mPaddle, mPaddleX - mPaddle.getWidth() / 2, mPaddleY - mPaddle.getHeight() / 2, null);
+
+        canvas.drawBitmap(mPaddle, mSmileyX - mPaddle.getWidth() / 2, mSmileyY - mPaddle.getHeight() / 2, null);
     }
 
     //This is run whenever the phone is touched by the user
@@ -112,14 +119,36 @@ public class TheGame extends GameThread{
 
         }
 
+        float smileyPaddleDistX = mBallX - mSmileyX;
+        float smileyPaddleDistY = mBallY - mSmileyY;
+        float smileyPaddleDistSq = smileyPaddleDistX * smileyPaddleDistX + smileyPaddleDistY * smileyPaddleDistY;
+
+        if (smileyPaddleDistSq < repulsionDistSq) {
+            // Collide!
+            float mBallSpeed = (float)Math.sqrt(mBallSpeedX * mBallSpeedX + mBallSpeedY * mBallSpeedY);
+
+            mBallSpeedX = mBallX - mPaddleX;
+            mBallSpeedY = mBallY - mPaddleY;
+
+            float mBallNewSpeed = (float)Math.sqrt(mBallSpeedX * mBallSpeedX + mBallSpeedY * mBallSpeedY);
+
+            mBallSpeedX = mBallSpeedX * mBallSpeed / mBallNewSpeed;
+            mBallSpeedY = mBallSpeedY * mBallSpeed / mBallNewSpeed;
+
+            updateScore(1);
+        }
+
         if ((mBallX - mBall.getWidth()/2 < 0 && mBallSpeedX < 0) ||
                 (mBallX + mBall.getWidth()/2 > mCanvasWidth && mBallSpeedX > 0)) {
             mBallSpeedX = -mBallSpeedX;
         }
 
-        if ((mBallY - mBall.getHeight()/2 < 0 && mBallSpeedY < 0) ||
-                (mBallY + mBall.getHeight()/2 > mCanvasHeight && mBallSpeedY > 0)) {
+        if ((mBallY - mBall.getHeight()/2 < 0 && mBallSpeedY < 0)) {
             mBallSpeedY = -mBallSpeedY;
+        }
+
+        if (mBallY + mBall.getHeight()/2 > mCanvasHeight && mBallSpeedY > 0) {
+            setState(GameThread.STATE_LOSE);
         }
 
         // Calculate the new ball position using the speed (pixel/sec)
